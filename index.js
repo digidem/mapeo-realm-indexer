@@ -49,9 +49,9 @@ export default class RealmIndexer {
             existing.forks.add(doc.version);
           } else {
             // Need to clone the forks set, before it is deleted
-            doc.forks = [...existing.forks.add(existing.version)];
+            const forks = [...existing.forks.add(existing.version)];
             realm.delete(existing);
-            realm.create(this.docType, doc);
+            realm.create(this.docType, { ...doc, forks });
           }
         }
       }
