@@ -41,25 +41,62 @@ const docs = [
   { id: "A", version: "8", links: ["5", "6"] },
 ];
 
+const scenarios = [
+  {
+    docs: docs.slice(0, 2),
+    expected: { id: "A", version: "2", links: ["1"], forks: [] },
+  },
+  {
+    docs: docs.slice(0, 3),
+    expected: { id: "A", version: "3", links: ["1"], forks: ["2"] },
+  },
+  {
+    docs: docs.slice(0, 4),
+    expected: { id: "A", version: "4", links: ["2", "3"], forks: [] },
+  },
+  {
+    docs: docs.slice(0, 5),
+    expected: { id: "A", version: "5", links: ["4"], forks: [] },
+  },
+  {
+    docs: docs.slice(0, 6),
+    expected: { id: "A", version: "6", links: ["4"], forks: ["5"] },
+  },
+  {
+    docs: docs.slice(0, 7),
+    expected: { id: "A", version: "7", links: ["4"], forks: ["5", "6"] },
+  },
+  {
+    docs: docs.slice(0, 8),
+    expected: { id: "A", version: "8", links: ["5", "6"], forks: ["7"] },
+  },
+];
+
 test("Expected head for all permutations of order", async (t) => {
   const indexer = new RealmIndexer(realm, {
     docType: "Doc",
     backlinkType: "Backlink",
   });
 
-  const expected = { id: "A", version: "8", links: ["5", "6"], forks: ["7"] };
+  for (const scenario of scenarios) {
+    const { docs, expected } = scenario;
 
-  for (const permutation of permute(docs)) {
-    indexer.batch(permutation);
-    const head = realm.objectForPrimaryKey("Doc", "A");
-    t.deepEqual(head.toJSON(), expected, JSON.stringify(permutation.map(doc => doc.version)));
-    realm.write(() => {
-      realm.deleteAll();
-    })
+    for (const permutation of permute(docs)) {
+      indexer.batch(permutation);
+      const head = realm.objectForPrimaryKey("Doc", "A");
+      t.deepEqual(
+        head.toJSON(),
+        expected,
+        JSON.stringify(permutation.map((doc) => doc.version))
+      );
+      realm.write(() => {
+        realm.deleteAll();
+      });
+    }
   }
 });
 
-test("cleanup", t => {
+test("cleanup", (t) => {
   realm.close();
   t.end();
 });
