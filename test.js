@@ -103,7 +103,7 @@ test("cleanup", (t) => {
 
 /**
  * Returns an iterator of all permutations of the given array.
- *
+ * From https://stackoverflow.com/a/37580979/3071863
  * @param {Array<any>} arr
  */
 function* permute(arr) {
