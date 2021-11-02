@@ -1,29 +1,7 @@
 import Realm from "realm";
 import test from "tape";
 import RealmIndexer from "./index.js";
-
-const BacklinkSchema = {
-  name: "Backlink",
-  properties: {
-    version: "string",
-  },
-  primaryKey: "version",
-};
-
-const DocSchema = {
-  name: "Doc",
-  properties: {
-    id: "string",
-    version: "string",
-    links: "string[]",
-    forks: {
-      type: "set",
-      objectType: "string",
-      default: [],
-    },
-  },
-  primaryKey: "id",
-};
+import { BacklinkSchema, DocSchema } from "./schema.js";
 
 const realm = await Realm.open({
   inMemory: true,
