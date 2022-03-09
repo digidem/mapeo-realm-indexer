@@ -11,7 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "realm": "^10.9.1"
+    "fast-equals": "^3.0.0",
+    "realm": "^10.13.0"
   },
   "devDependencies": {
     "@types/node": "^16.11.6",
