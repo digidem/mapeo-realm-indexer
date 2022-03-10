@@ -1,3 +1,4 @@
+// @ts-check
 import Realm from "realm";
 import test from "tape";
 import RealmIndexer from "./index.js";
@@ -82,7 +83,9 @@ test("cleanup", (t) => {
 /**
  * Returns an iterator of all permutations of the given array.
  * From https://stackoverflow.com/a/37580979/3071863
- * @param {Array<any>} arr
+ * @template T
+ * @param {Array<T>} arr
+ * @returns {IterableIterator<Array<T>>}
  */
 function* permute(arr) {
   var length = arr.length,
