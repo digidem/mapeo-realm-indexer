@@ -15,7 +15,6 @@ export const DocSchema = {
     forks: {
       type: "set",
       objectType: "string",
-      default: [],
     }
   },
   primaryKey: "id",

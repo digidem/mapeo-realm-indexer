@@ -1,5 +1,7 @@
 import assert from 'assert'
-import { parsePropertyType } from './lib/realm-utils.js'
+import { assertRealmSchemaIncludes } from './lib/realm-utils.js'
+import { DocSchema, BacklinkSchema } from './schema.js'
+
 /**
  * @typedef {object} IndexableDocument
  * @property {string} id
@@ -17,13 +19,15 @@ export default class RealmIndexer {
    * @param {object} options
    * @param {string} options.docType
    * @param {string} options.backlinkType
+   * @param {typeof defaultGetWinner} [options.getWinner]
    */
-  constructor(realm, { docType, backlinkType }) {
+  constructor(realm, { docType, backlinkType, getWinner = defaultGetWinner }) {
     this.realm = realm
     this.docType = docType
     this.backlinkType = backlinkType
-    validateDocSchema(realm.schema, docType)
-    validateBacklinkSchema(realm.schema, backlinkType)
+    this.getWinner = getWinner
+    assertRealmSchemaIncludes(realm, DocSchema)
+    assertRealmSchemaIncludes(realm, BacklinkSchema)
   }
 
   /** @param {IndexableDocument[]} docs */
@@ -57,7 +61,7 @@ export default class RealmIndexer {
           realm.create(docType, doc)
         } else {
           // Document is forked, so we need to select a "winner"
-          const winner = getWinner(existing, doc)
+          const winner = this.getWinner(existing, doc)
           // TODO: Can the forks Set get out of date over time? E.g. could some of
           // the forks end up being linked by a doc that is indexed later on?
           if (winner === existing) {
@@ -82,11 +86,11 @@ export default class RealmIndexer {
 
 /**
  *
- * @param {IndexedDocument | IndexableDocument} docA
- * @param {IndexedDocument | IndexableDocument} docB
+ * @param {IndexableDocument} docA
+ * @param {IndexableDocument} docB
  * @returns IndexedDocument
  */
-function getWinner(docA, docB) {
+function defaultGetWinner(docA, docB) {
   if (
     // Checking neither null nor undefined
     docA.timestamp != null &&
@@ -97,73 +101,4 @@ function getWinner(docA, docB) {
   }
   // They are equal or no timestamp property, so sort by version to ensure winner is deterministic
   return docA.version > docB.version ? docA : docB
-}
-
-/**
- * @param {import('realm').ObjectSchema[]} schema
- * @param {string} docType
- */
-function validateDocSchema(schema, docType) {
-  const docSchema = schema.find((s) => s.name === docType)
-  assert(docSchema, `type ${docType} not found in schema`)
-  assert(docSchema.properties.id, `type ${docType} must have an id property`)
-  assert(
-    docSchema.primaryKey === 'id',
-    `type ${docType} id property must be a primary key`
-  )
-  const props = docSchema.properties
-  assert(
-    validateProperty(props.id, { type: 'string' }),
-    `id property must be a string`
-  )
-  assert(
-    validateProperty(props.version, { type: 'string', optional: false }),
-    `version property must be a string`
-  )
-  assert(
-    validateProperty(props.links, { type: 'list', optional: false }),
-    `links property must be a list`
-  )
-  assert(
-    typeof props.timestamp === 'undefined' ||
-      validateProperty(props.timestamp, { type: 'string' }) ||
-      validateProperty(props.timestamp, { type: 'number' }),
-    `timestamp property must be a string`
-  )
-}
-
-/**
- * @param {import('realm').ObjectSchema[]} schema
- * @param {string} backlinkType
- */
-function validateBacklinkSchema(schema, backlinkType) {
-  const docSchema = schema.find((s) => s.name === backlinkType)
-  assert(docSchema, `type ${backlinkType} not found in schema`)
-  assert(
-    docSchema.primaryKey === 'version',
-    `type ${backlinkType} version property must be a primary key`
-  )
-  assert(
-    validateProperty(docSchema.properties.version, { type: 'string' }),
-    `version property must be a string`
-  )
-}
-
-/**
- *
- * @param {Realm.PropertyType | Realm.ObjectSchema | Realm.ObjectSchemaProperty} prop
- * @param {Partial<Realm.ObjectSchemaProperty>} propertySchema
- * @return {boolean}
- */
-function validateProperty(prop, propertySchema) {
-  if (typeof prop !== 'string' && 'properties' in prop) return false
-  const normalizedProp = parsePropertyType(prop)
-  for (const [key, value] of Object.entries(propertySchema)) {
-    if (
-      normalizedProp[/** @type {keyof Realm.ObjectSchemaProperty} */ (key)] !==
-      value
-    )
-      return false
-  }
-  return true
 }
