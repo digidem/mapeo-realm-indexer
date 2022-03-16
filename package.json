@@ -7,7 +7,7 @@
   "scripts": {
     "test": "run-p lint type tape",
     "lint": "eslint .",
-    "tape": "node test.js",
+    "tape": "tape 'test/**/*.js'",
     "posttest": "mkdir -p coverage && tap --coverage-report=text-lcov > ./coverage/lcov.info",
     "type": "tsc --noEmit",
     "prepare": "husky install"
