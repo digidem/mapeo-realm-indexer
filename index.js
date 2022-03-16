@@ -1,6 +1,8 @@
 import Realm from 'realm'
 import { assertRealmSchemaIncludes } from './lib/realm-utils.js'
-import { DocSchema, BacklinkSchema } from './schema.js'
+import { DocSchema, BacklinkSchema } from './lib/schema.js'
+
+export { DocSchema, BacklinkSchema }
 
 /**
  * @typedef {object} IndexableDocument
@@ -14,6 +16,9 @@ import { DocSchema, BacklinkSchema } from './schema.js'
 /** @typedef {{ version: string } & Realm.Object} Backlink */
 
 export default class RealmIndexer {
+  static DocSchema = DocSchema
+  static BacklinkSchema = BacklinkSchema
+
   /**
    * @param {import('realm')} realm
    * @param {object} options

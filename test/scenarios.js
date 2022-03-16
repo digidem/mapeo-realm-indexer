@@ -3,8 +3,7 @@ import Realm from 'realm'
 import test from 'tape'
 import tmp from 'tmp'
 import path from 'path'
-import RealmIndexer from '../index.js'
-import { BacklinkSchema, DocSchema } from '../schema.js'
+import RealmIndexer, { BacklinkSchema, DocSchema } from '../index.js'
 
 const { name: tmpDir, removeCallback } = tmp.dirSync({ unsafeCleanup: true })
 
