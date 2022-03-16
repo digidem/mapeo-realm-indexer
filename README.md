@@ -1,9 +1,13 @@
 # @mapeo/realm-indexer
 
-Index Mapeo data in a Realm database
+[![Node.js CI](https://github.com/digidem/mapeo-realm-indexer/workflows/Node.js%20CI/badge.svg)](https://github.com/digidem/mapeo-realm-indexer/actions/workflows/node.js.yml)
+[![Coverage Status](https://coveralls.io/repos/github/digidem/mapeo-realm-indexer/badge.svg)](https://coveralls.io/github/digidem/mapeo-realm-indexer)
+[![Npm package version](https://img.shields.io/npm/v/@mapeo/realm-indexer)](https://npmjs.com/package/@mapeo/realm-indexer)
 
 **⚠️ This is an Alpha release and the API might change. Do not use in
 production. ⚠️**
+
+Index Mapeo data in a Realm database
 
 Mapeo data is stored in multiple append-only logs (we use [Hypercore](https://github.com/hypercore-protocol/hypercore-next)). The data is structured as a Directed Acylclic Graph (DAG) for each document `id`: each edit of a particular document is stored as a new document that points to its "parent". This can result in "forks": the same parent can be edited in two different instances of Mapeo, resulting in two versions of the same document.
 
