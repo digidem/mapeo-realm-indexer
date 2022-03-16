@@ -1,14 +1,13 @@
 {
-  "name": "realm-kappa-dag-indexer",
-  "version": "1.0.0",
-  "description": "Index a DAG from unordered log data in a Realm database",
+  "name": "@mapeo/realm-indexer",
+  "version": "1.0.0-alpha.0",
+  "description": "Index Mapeo data in a Realm database",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "run-p lint type tape",
     "lint": "eslint .",
     "tape": "tape 'test/**/*.js'",
-    "posttest": "mkdir -p coverage && tap --coverage-report=text-lcov > ./coverage/lcov.info",
     "type": "tsc --noEmit",
     "prepare": "husky install"
   },
@@ -50,14 +49,15 @@
     "singleQuote": true
   },
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digidem/realm-kappa-dag-indexer.git"
+    "url": "git+https://github.com/digidem/mapeo-realm-indexer.git"
   },
   "bugs": {
-    "url": "https://github.com/digidem/realm-kappa-dag-indexer/issues"
+    "url": "https://github.com/digidem/mapeo-realm-indexer/issues"
   },
-  "homepage": "https://github.com/digidem/realm-kappa-dag-indexer#readme"
+  "homepage": "https://github.com/digidem/mapeo-realm-indexer#readme"
 }
