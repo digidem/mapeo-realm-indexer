@@ -1,21 +1,25 @@
-export const BacklinkSchema = {
-  name: "Backlink",
-  properties: {
-    version: "string",
-  },
-  primaryKey: "version",
-};
+// @ts-check
 
-export const DocSchema = {
-  name: "Doc",
+/** @type {Realm.ObjectSchema} */
+export const BacklinkSchema = {
+  name: 'Backlink',
   properties: {
-    id: "string",
-    version: "string",
-    links: "string[]",
-    forks: {
-      type: "set",
-      objectType: "string",
-    }
+    version: 'string',
   },
-  primaryKey: "id",
-};
+  primaryKey: 'version',
+}
+
+/** @type {Realm.ObjectSchema} */
+export const DocSchema = {
+  name: 'Doc',
+  properties: {
+    id: 'string',
+    version: 'string',
+    links: 'string[]',
+    forks: {
+      type: 'set',
+      objectType: 'string',
+    },
+  },
+  primaryKey: 'id',
+}

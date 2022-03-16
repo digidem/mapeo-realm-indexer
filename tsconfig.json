@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "es2018",
-    "allowSyntheticDefaultImports": true,
+    "target": "es2019",
+    "lib": ["es2020", "dom"],
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+    "module": "es2022",
+    "moduleResolution": "node",
     "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "outDir": "./dist",
+    "checkJs": false,
+    "noEmit": true,
     "typeRoots": ["types", "node_modules/@types"]
-  }
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules"]
 }

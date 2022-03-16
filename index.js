@@ -1,4 +1,4 @@
-import assert from 'assert'
+import Realm from 'realm'
 import { assertRealmSchemaIncludes } from './lib/realm-utils.js'
 import { DocSchema, BacklinkSchema } from './schema.js'
 
@@ -17,9 +17,9 @@ export default class RealmIndexer {
   /**
    * @param {import('realm')} realm
    * @param {object} options
-   * @param {string} options.docType
-   * @param {string} options.backlinkType
-   * @param {typeof defaultGetWinner} [options.getWinner]
+   * @param {string} options.docType - Name of the Realm object type that will store the indexed document
+   * @param {string} options.backlinkType - Name of the Realm object type that will store the backlinks
+   * @param {typeof defaultGetWinner} [options.getWinner] - Function that will be used to determine the "winning" fork of a document
    */
   constructor(realm, { docType, backlinkType, getWinner = defaultGetWinner }) {
     this.realm = realm
