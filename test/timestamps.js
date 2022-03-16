@@ -28,6 +28,9 @@ test('If doc has timestamp, it is used to select winner', async (t) => {
     { id: 'A', version: '1', links: [] },
     { id: 'A', version: '2', links: ['1'], timestamp: Date.now() },
     { id: 'A', version: '3', links: ['1'], timestamp: Date.now() - 1000 },
+    { id: 'B', version: '1', links: [] },
+    { id: 'B', version: '2', links: ['1'], timestamp: Date.now() - 1000 },
+    { id: 'B', version: '3', links: ['1'], timestamp: Date.now() },
   ]
 
   const indexer = new RealmIndexer(realm, {
@@ -35,18 +38,36 @@ test('If doc has timestamp, it is used to select winner', async (t) => {
     backlinkType: 'Backlink',
   })
 
-  const expected = {
-    id: 'A',
-    version: '2',
-    links: ['1'],
-    forks: ['3'],
+  indexer.batch(docs)
+
+  {
+    const expected = {
+      id: 'A',
+      version: '2',
+      links: ['1'],
+      forks: ['3'],
+    }
+
+    const head = realm.objectForPrimaryKey('Doc', 'A')
+    // eslint-disable-next-line no-unused-vars
+    const { timestamp, ...doc } = head.toJSON()
+    t.deepEqual(doc, expected)
   }
 
-  indexer.batch(docs)
-  const head = realm.objectForPrimaryKey('Doc', 'A')
-  // eslint-disable-next-line no-unused-vars
-  const { timestamp, ...doc } = head.toJSON()
-  t.deepEqual(doc, expected)
+  {
+    const expected = {
+      id: 'B',
+      version: '3',
+      links: ['1'],
+      forks: ['2'],
+    }
+
+    const head = realm.objectForPrimaryKey('Doc', 'B')
+    // eslint-disable-next-line no-unused-vars
+    const { timestamp, ...doc } = head.toJSON()
+    t.deepEqual(doc, expected)
+  }
+
   realm.write(() => {
     realm.deleteAll()
   })
